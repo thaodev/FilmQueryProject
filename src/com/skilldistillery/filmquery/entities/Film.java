@@ -12,7 +12,7 @@ public class Film {
 	private String title;
 	private String description;
 	private short releaseYear;
-	private int languageId;
+	private String language;
 	private int rentDuration;
 	private double rate;
 	private int length;
@@ -20,22 +20,20 @@ public class Film {
 	private String rating;
 	private String features;
 	
-	private List<Actor> actorList;
-	
-	
+		
 	public Film() {
 		
 	}
 
 
-	public Film(int filmId, String title, String description, short releaseYear, int languageId, int rentDuration,
+	public Film(int filmId, String title, String description, short releaseYear, String language, int rentDuration,
 			double rate, int length, double replacementCost, String rating, String features) {
 		
 		this.filmId = filmId;
 		this.title = title;
 		this.description = description;
 		this.releaseYear = releaseYear;
-		this.languageId = languageId;
+		this.language = language;
 		this.rentDuration = rentDuration;
 		this.rate = rate;
 		this.length = length;
@@ -85,13 +83,13 @@ public class Film {
 	}
 
 
-	public int getLanguageId() {
-		return languageId;
+	public String getLanguage() {
+		return language;
 	}
 
 
-	public void setLanguageId(int languageId) {
-		this.languageId = languageId;
+	public void setLanguageId(String language) {
+		this.language = language;
 	}
 
 
@@ -155,18 +153,26 @@ public class Film {
 	}
 
 
-	@Override
+	public List<Actor> getActorList() {
+		List<Actor> actorList;
+		DatabaseAccessor db = new DatabaseAccessorObject();
+		actorList = db.findActorsByFilmId(filmId);
+		
+		return actorList;
+	}
+
+
+		@Override
 	public String toString() {
-		return "Film [filmId=" + filmId + ", title=" + title + ", description=" + description + ", releaseYear="
-				+ releaseYear + ", languageId=" + languageId + ", rentDuration=" + rentDuration + ", rate=" + rate
-				+ ", length=" + length + ", replacementCost=" + replacementCost + ", rating=" + rating + ", features="
-				+ features + "]";
+		return " Film [title=" + title + ", description=" + description + ", releaseYear="
+				+ releaseYear + ", language=" + language + ", rate=" + rate
+				+ ", rating=" + rating + "]"+ "\n Actor list: "  + getActorList() ;
 	}
 
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(description, features, filmId, languageId, length, rate, rating, releaseYear, rentDuration,
+		return Objects.hash(description, features, filmId, language, length, rate, rating, releaseYear, rentDuration,
 				replacementCost, title);
 	}
 
@@ -181,7 +187,7 @@ public class Film {
 			return false;
 		Film other = (Film) obj;
 		return Objects.equals(description, other.description) && Objects.equals(features, other.features)
-				&& filmId == other.filmId && languageId == other.languageId && length == other.length
+				&& filmId == other.filmId && language == other.language && length == other.length
 				&& Double.doubleToLongBits(rate) == Double.doubleToLongBits(other.rate)
 				&& Objects.equals(rating, other.rating) && releaseYear == other.releaseYear
 				&& rentDuration == other.rentDuration
@@ -190,20 +196,5 @@ public class Film {
 	}
 
 
-	public List<Actor> getActorList() {
-		DatabaseAccessor db = new DatabaseAccessorObject();
-		actorList = db.findActorsByFilmId(filmId);
-		
-		return actorList;
-	}
-
-
-	public void setActorList(List<Actor> actorList) {
-		this.actorList = actorList;
-	}
-	
-	
-	
-	
 	
 }

@@ -42,13 +42,20 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 			ResultSet filmResult = stmt.executeQuery();
 			if (filmResult.next()) {
-				film = new Film(filmResult.getInt("id"), filmResult.getString("title"),
-						filmResult.getString("description"), filmResult.getShort("release_year"),
-						filmResult.getInt("language_id"), filmResult.getInt("rental_duration"),
-						filmResult.getDouble("rental_rate"), filmResult.getInt("length"),
-						filmResult.getDouble("replacement_cost"), filmResult.getString("rating"),
-						filmResult.getString("special_features"));
-
+				filmId = filmResult.getInt("id");
+				String title = filmResult.getString("title");
+				String desc = filmResult.getString("description");
+				short releaseYear = filmResult.getShort("release_year");
+				int langId = filmResult.getInt("language_id");
+				String language = findLanguageById(langId);
+				int rentDur = filmResult.getInt("rental_duration");
+				double rate = filmResult.getDouble("rental_rate");
+				int length = filmResult.getInt("length");
+				double repCost = filmResult.getDouble("replacement_cost");
+				String rating = filmResult.getString("rating");
+				String features = filmResult.getString("special_features");
+				film = new Film(filmId, title, desc, releaseYear, language, rentDur, rate, length, repCost, rating,
+						features);
 			}
 
 			// ...
@@ -98,6 +105,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		}
 		return actor;
 	}
+
 //Implement findActorsByFilmId with an appropriate List implementation that will be populated using a ResultSet and returned.
 	@Override
 	public List<Actor> findActorsByFilmId(int filmId) {
@@ -105,28 +113,140 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		String user = "student";
 		String pass = "student";
 		try {
-		    Connection conn = DriverManager.getConnection(URL, user, pass);
-		    String sql = "SELECT * FROM actor JOIN film_actor ON actor.id = film_actor.actor_id "
-		               + " WHERE film_id = ?";
-		    PreparedStatement stmt = conn.prepareStatement(sql);
-		    stmt.setInt(1, filmId);
-		    ResultSet rs = stmt.executeQuery();
-		    while (rs.next()) {
-		      int actorId = rs.getInt("id");
-		      String firstName = rs.getString("first_name");
-		      String lastName = rs.getString("last_name");
-		      
-		      Actor actor = new Actor(actorId, firstName, lastName);
-		      actors.add(actor);
-		    }
-		    rs.close();
-		    stmt.close();
-		    conn.close();
-		  } catch (SQLException e) {
-		    e.printStackTrace();
-		  }
-		
+			Connection conn = DriverManager.getConnection(URL, user, pass);
+			String sql = "SELECT * FROM actor JOIN film_actor ON actor.id = film_actor.actor_id "
+					+ " WHERE film_id = ?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, filmId);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				int actorId = rs.getInt("id");
+				String firstName = rs.getString("first_name");
+				String lastName = rs.getString("last_name");
+
+				Actor actor = new Actor(actorId, firstName, lastName);
+				actors.add(actor);
+			}
+			rs.close();
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		return actors;
+	}
+
+	public List<Film> findFilmsBySearchKeyWord(String searchWord) {
+		List<Film> films = new ArrayList<>();
+		String user = "student";
+		String pass = "student";
+		Connection conn;
+		try {
+			conn = DriverManager.getConnection(URL, user, pass);
+
+			// ...
+			String sql = "SELECT * FROM film WHERE title LIKE ? OR description LIKE ?";
+
+			PreparedStatement stmt;
+
+			stmt = conn.prepareStatement(sql);
+			searchWord = "%" + searchWord + "%";
+			stmt.setString(1, searchWord);
+			stmt.setString(2, searchWord);
+
+			ResultSet filmResult = stmt.executeQuery();
+			while (filmResult.next()) {
+				int filmId = filmResult.getInt("id");
+				String title = filmResult.getString("title");
+				String desc = filmResult.getString("description");
+				short releaseYear = filmResult.getShort("release_year");
+				int langId = filmResult.getInt("language_id");
+				String language = findLanguageById(langId);
+				int rentDur = filmResult.getInt("rental_duration");
+				double rate = filmResult.getDouble("rental_rate");
+				int length = filmResult.getInt("length");
+				double repCost = filmResult.getDouble("replacement_cost");
+				String rating = filmResult.getString("rating");
+				String features = filmResult.getString("special_features");
+				films.add( new Film(filmId, title, desc, releaseYear, language, rentDur, rate, length, repCost, rating,
+						features));
+
+			}
+			filmResult.close();
+			stmt.close();
+
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return films;
+
+	}
+
+	public String findCategoryByFilmId(int filmId) {
+		String category = "";
+		String user = "student";
+		String pass = "student";
+		Connection conn;
+		try {
+			conn = DriverManager.getConnection(URL, user, pass);
+
+			// ...
+			String sql = "SELECT name FROM category " + "JOIN film_category ON category_id = film_category.category_id"
+					+ " WHERE film_id = ?";
+
+			PreparedStatement stmt;
+
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, filmId);
+
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				category = rs.getString("name");
+			}
+			rs.close();
+			stmt.close();
+
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return category;
+	}
+	
+	public String findLanguageById(int id) {
+		String language = "";
+		String user = "student";
+		String pass = "student";
+		Connection conn;
+		try {
+			conn = DriverManager.getConnection(URL, user, pass);
+
+			// ...
+			String sql = "SELECT name FROM language WHERE id = ?";
+
+			PreparedStatement stmt;
+
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, id);
+
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				language = rs.getString("name");
+			}
+			rs.close();
+			stmt.close();
+
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		
+		return language;
 	}
 
 }

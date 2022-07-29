@@ -10,52 +10,116 @@ import com.skilldistillery.filmquery.entities.Actor;
 import com.skilldistillery.filmquery.entities.Film;
 
 public class FilmQueryApp {
-  
-  DatabaseAccessor db = new DatabaseAccessorObject();
 
-  public static void main(String[] args) throws SQLException {
-    FilmQueryApp app = new FilmQueryApp();
-    app.test();
-    app.launch();
-  }
+	DatabaseAccessor db = new DatabaseAccessorObject();
 
-  private void test() throws SQLException {
-    Film film = db.findFilmById(1);
-    System.out.println(film);
-    List<Actor> actorList = film.getActorList();
-    System.out.println("Actor list of film: "+ film.getTitle() + " is: ");
-    for(Actor item : actorList) {
-		  System.out.println(item);
-	  }
-  }
+	public static void main(String[] args) throws SQLException {
+		FilmQueryApp app = new FilmQueryApp();
+		// app.test();
+		app.launch();
+	}
 
-  private void launch() {
-    Scanner input = new Scanner(System.in);
-    
-    startUserInterface(input);
-    
-    input.close();
-  }
+	private void test() throws SQLException {
+		Film film = db.findFilmById(1);
+		System.out.println(film);
+		List<Actor> actorList = film.getActorList();
+		System.out.println("Actor list of film: " + film.getTitle() + " is: ");
+		for (Actor item : actorList) {
+			System.out.println(item);
+		}
+	}
 
-  private void startUserInterface(Scanner input) {
-	  System.out.println("Enter actor id: ");
-	  int actorId = input.nextInt();
-	  Actor actor = db.findActorById(actorId);
-	  if (actor == null) {
-		  System.out.println("There is no actor found with given id.");
-	  } else {
-		  System.out.println("The actor found is " + actor);
-	  }
-	  
-	  System.out.println("Enter the film id: ");
-	  int fimlId = input.nextInt();
-	  List<Actor> actorList = db.findActorsByFilmId(fimlId);
-	  System.out.println("The actor list of given film id is: ");
-	  for(Actor item : actorList) {
-		  System.out.println(item);
-	  }
-  
-    
-  }
+	private void launch() {
+		Scanner input = new Scanner(System.in);
+
+		startUserInterface(input);
+
+		input.close();
+	}
+
+	private void startUserInterface(Scanner input) {
+		boolean isContinued = true;
+
+		while (isContinued) {
+
+			menuDisplay();
+			int choice = input.nextInt();
+			switch (choice) {
+			case 1:
+				System.out.println("Enter the id: ");
+				int filmId = input.nextInt();
+				lookUpFilmById(filmId);
+				break;
+
+			case 2:
+				System.out.println("Enter the search keyword: ");
+				input.nextLine();
+				String search = input.nextLine();
+				lookUpFilmBySearchKeyWord(search);
+				break;
+
+			case 3:
+				isContinued = false;
+				break;
+			}
+
+		}
+
+		// for LABS
+//		System.out.println("Enter actor id: ");
+//		int actorId = input.nextInt();
+//		Actor actor = db.findActorById(actorId);
+//		if (actor == null) {
+//			System.out.println("There is no actor found with given id.");
+//		} else {
+//			System.out.println("The actor found is " + actor);
+//		}
+//
+//		System.out.println("Enter the film id: ");
+//		int fimlId = input.nextInt();
+//		List<Actor> actorList = db.findActorsByFilmId(fimlId);
+//		System.out.println("The actor list of given film id is: ");
+//		for (Actor item : actorList) {
+//			System.out.println(item);
+//		}
+
+	}
+
+	private void menuDisplay() {
+		System.out.println("==============Film Query==================");
+		System.out.println("1. Look up a film by its id.");
+		System.out.println("2. Look up a film by a search keyword.");
+		System.out.println("3. Exit the application.");
+	}
+	
+	private void subMenu() {
+		System.out.println("============Sub Menu============");
+		System.out.println("1. Return to the main menu");
+		System.out.println("2. View all film details");
+	}
+
+	private void lookUpFilmById(int id) {
+		Film film = db.findFilmById(id);
+		if (film == null) {
+			System.out.println("Not found");
+		} else {
+			System.out.println(film);
+		}
+
+	}
+
+	private void lookUpFilmBySearchKeyWord(String search) {
+		List<Film> films = db.findFilmsBySearchKeyWord(search);
+		if (films == null) {
+			System.out.println("Not found");
+		} else {
+			System.out.println("Total films found: " + films.size());
+			for (Film film : films) {
+				System.out.println(film);
+			}
+			
+
+		}
+	}
 
 }
