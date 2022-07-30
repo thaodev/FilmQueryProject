@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.skilldistillery.filmquery.entities.Actor;
 import com.skilldistillery.filmquery.entities.Film;
+import com.skilldistillery.filmquery.entities.Inventory;
 
 public class DatabaseAccessorObject implements DatabaseAccessor {
 	private static final String URL = "jdbc:mysql://localhost:3306/sdvid?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=US/Mountain";
@@ -144,8 +145,6 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		Connection conn;
 		try {
 			conn = DriverManager.getConnection(URL, user, pass);
-
-			// ...
 			String sql = "SELECT * FROM film WHERE title LIKE ? OR description LIKE ?";
 
 			PreparedStatement stmt;
@@ -247,6 +246,42 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 		
 		return language;
+	}
+	
+	public List<Inventory> getFilmInventory(int filmId) {
+		List<Inventory> filmInventories = new ArrayList<>();
+		String user = "student";
+		String pass = "student";
+		
+		int store_id = 0;
+		
+		Connection conn;
+		try {
+			conn = DriverManager.getConnection(URL, user, pass);
+
+			// ...
+			String sql = "SELECT store_id, media_condition FROM inventory_item WHERE film_id = ?";
+
+			PreparedStatement stmt;
+
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, filmId);
+
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				int storeId = rs.getInt("store_id");
+				String condition = rs.getString("media_condition");
+				filmInventories.add(new Inventory(storeId, condition));
+			}
+			rs.close();
+			stmt.close();
+
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return filmInventories;
 	}
 
 }

@@ -20,7 +20,7 @@ public class Film {
 	private String rating;
 	private String features;
 	
-		
+	DatabaseAccessor db = new DatabaseAccessorObject();	
 	public Film() {
 		
 	}
@@ -155,25 +155,46 @@ public class Film {
 
 	public List<Actor> getActorList() {
 		List<Actor> actorList;
-		DatabaseAccessor db = new DatabaseAccessorObject();
 		actorList = db.findActorsByFilmId(filmId);
 		
 		return actorList;
 	}
+	
+	public String getCategory() {
+		String category = db.findCategoryByFilmId(filmId);
+		return category;
+	}
 
+	public void getInventory() {
+		List<Inventory> inventoryList;
+		inventoryList = db.getFilmInventory(filmId);
+		
+		for (Inventory item: inventoryList) {
+			System.out.println(item);
+		}
+		
+	}
 
 		@Override
 	public String toString() {
-		return " Film [title=" + title + ", description=" + description + ", releaseYear="
-				+ releaseYear + ", language=" + language + ", rate=" + rate
-				+ ", rating=" + rating + "]"+ "\n Actor list: "  + getActorList() ;
+		return " Film [title = " + title + ",\n description = " + description + ",\n releaseYear = "
+				+ releaseYear + ",\n language = " + language + ",\n rate = " + rate
+				+ ",\n rating = " + rating + "]"+ "\n Actor list: "  + getActorList() ;
 	}
-
-
+		
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(description, features, filmId, language, length, rate, rating, releaseYear, rentDuration,
 				replacementCost, title);
+	}
+
+
+	public void displayFilmDetails() {
+		System.out.println( "Film [filmId = " + filmId + ", title = " + title + ",\n description = " + description + ",\n releaseYear = "
+				+ releaseYear + ", language = " + language + ",\n rentDuration = " + rentDuration + ", rate = " + rate
+				+ ",\n length = " + length + ", replacementCost = " + replacementCost + ",\n rating = " + rating + ", features = "
+				+ features + "]" + "\n Actor list: "  + getActorList() + "\n Category = " + getCategory() +"\n Inventory: "); getInventory();
 	}
 
 
@@ -193,8 +214,5 @@ public class Film {
 				&& rentDuration == other.rentDuration
 				&& Double.doubleToLongBits(replacementCost) == Double.doubleToLongBits(other.replacementCost)
 				&& Objects.equals(title, other.title);
-	}
-
-
-	
+	}	
 }

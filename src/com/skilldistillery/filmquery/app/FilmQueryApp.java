@@ -1,6 +1,7 @@
 package com.skilldistillery.filmquery.app;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -43,29 +44,69 @@ public class FilmQueryApp {
 		while (isContinued) {
 
 			menuDisplay();
-			int choice = input.nextInt();
+			int choice = 0;
+
+			try {
+				choice = Integer.parseInt(input.next());
+			} catch (Exception e) {
+				System.out.println("Invalid input. Try Again!");
+			}
+
 			switch (choice) {
 			case 1:
 				System.out.println("Enter the id: ");
 				int filmId = input.nextInt();
-				lookUpFilmById(filmId);
+				Film film = lookUpFilmById(filmId);
+				if (film == null) {
+					System.out.println("Not found");
+				} else {
+					System.out.println(film);
+					displaySubMenu(input, film);
+				}
 				break;
 
 			case 2:
 				System.out.println("Enter the search keyword: ");
 				input.nextLine();
 				String search = input.nextLine();
-				lookUpFilmBySearchKeyWord(search);
+				List<Film> films = lookUpFilmBySearchKeyWord(search);
+				if (films.size() == 0 || films == null) {
+					System.out.println("Not found");
+				} else {
+					System.out.println("Total films found: " + films.size());
+					for (Film item : films) {
+						System.out.println(item);
+						System.out.println("----");
+					}
+				}
 				break;
 
-			case 3:
+			default:
+				System.out.println("EXIT PROGRAM! GOOD BYE!!!");
 				isContinued = false;
 				break;
 			}
 
 		}
 
-		// for LABS
+	}
+
+	private void displaySubMenu(Scanner userInput, Film film) {
+		subMenu();
+		System.out.println("User enter: ");
+		int userChoice = userInput.nextInt();
+		switch (userChoice) {
+		case 1:
+			startUserInterface(userInput);
+			break;
+
+		case 2:
+			film.displayFilmDetails();
+			break;
+		}
+	}
+
+	// for LABS
 //		System.out.println("Enter actor id: ");
 //		int actorId = input.nextInt();
 //		Actor actor = db.findActorById(actorId);
@@ -83,43 +124,30 @@ public class FilmQueryApp {
 //			System.out.println(item);
 //		}
 
-	}
-
 	private void menuDisplay() {
+		System.out.println();
 		System.out.println("==============Film Query==================");
 		System.out.println("1. Look up a film by its id.");
 		System.out.println("2. Look up a film by a search keyword.");
 		System.out.println("3. Exit the application.");
 	}
-	
+
 	private void subMenu() {
+		System.out.println();
 		System.out.println("============Sub Menu============");
 		System.out.println("1. Return to the main menu");
 		System.out.println("2. View all film details");
 	}
 
-	private void lookUpFilmById(int id) {
+	private Film lookUpFilmById(int id) {
 		Film film = db.findFilmById(id);
-		if (film == null) {
-			System.out.println("Not found");
-		} else {
-			System.out.println(film);
-		}
+		return film;
 
 	}
 
-	private void lookUpFilmBySearchKeyWord(String search) {
+	private List<Film> lookUpFilmBySearchKeyWord(String search) {
 		List<Film> films = db.findFilmsBySearchKeyWord(search);
-		if (films == null) {
-			System.out.println("Not found");
-		} else {
-			System.out.println("Total films found: " + films.size());
-			for (Film film : films) {
-				System.out.println(film);
-			}
-			
-
-		}
+		return films;
 	}
 
 }
