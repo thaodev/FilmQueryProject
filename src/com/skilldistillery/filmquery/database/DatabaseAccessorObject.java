@@ -92,8 +92,8 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				actor = new Actor(); // Create the object
 				// Here is our mapping of query columns to our object fields:
 				actor.setId(actorResult.getInt("id"));
-				actor.setFirstName(actorResult.getString("last_name"));
-				actor.setLastName(actorResult.getString("first_name"));
+				actor.setFirstName(actorResult.getString("first_name"));
+				actor.setLastName(actorResult.getString("last_name"));
 			}
 			// ...
 			actorResult.close();
@@ -217,7 +217,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	}
 	
 	public String findLanguageById(int id) {
-		String language = "";
+		String language = null;
 		String user = "student";
 		String pass = "student";
 		Connection conn;
