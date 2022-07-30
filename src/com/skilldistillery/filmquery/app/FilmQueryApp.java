@@ -46,12 +46,14 @@ public class FilmQueryApp {
 			menuDisplay();
 			int choice = 0;
 
-			try {
-				choice = Integer.parseInt(input.next());
-			} catch (Exception e) {
-				System.out.println("Invalid input. Try Again!");
+			while (true) {
+				try {
+					choice = Integer.parseInt(input.next());
+					break;
+				} catch (Exception e) {
+					System.out.println("Invalid input. Try Again!");
+				}
 			}
-
 			switch (choice) {
 			case 1:
 				System.out.println("Enter the id: ");
@@ -94,7 +96,15 @@ public class FilmQueryApp {
 	private void displaySubMenu(Scanner userInput, Film film) {
 		subMenu();
 		System.out.println("User enter: ");
-		int userChoice = userInput.nextInt();
+		int userChoice = 0;
+		while (true) {
+			try {
+				userChoice = Integer.parseInt(userInput.next());
+				break;
+			} catch (Exception e) {
+				System.out.println("Invalid input. Try Again!");
+			}
+		}
 		switch (userChoice) {
 		case 1:
 			startUserInterface(userInput);
