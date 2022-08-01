@@ -20,16 +20,6 @@ public class FilmQueryApp {
 		app.launch();
 	}
 
-	private void test() throws SQLException {
-		Film film = db.findFilmById(1);
-		System.out.println(film);
-		List<Actor> actorList = film.getActorList();
-		System.out.println("Actor list of film: " + film.getTitle() + " is: ");
-		for (Actor item : actorList) {
-			System.out.println(item);
-		}
-	}
-
 	private void launch() {
 		Scanner input = new Scanner(System.in);
 
@@ -116,24 +106,6 @@ public class FilmQueryApp {
 		}
 	}
 
-	// for LABS
-//		System.out.println("Enter actor id: ");
-//		int actorId = input.nextInt();
-//		Actor actor = db.findActorById(actorId);
-//		if (actor == null) {
-//			System.out.println("There is no actor found with given id.");
-//		} else {
-//			System.out.println("The actor found is " + actor);
-//		}
-//
-//		System.out.println("Enter the film id: ");
-//		int fimlId = input.nextInt();
-//		List<Actor> actorList = db.findActorsByFilmId(fimlId);
-//		System.out.println("The actor list of given film id is: ");
-//		for (Actor item : actorList) {
-//			System.out.println(item);
-//		}
-
 	private void menuDisplay() {
 		System.out.println();
 		System.out.println("==============Film Query==================");
@@ -160,4 +132,31 @@ public class FilmQueryApp {
 		return films;
 	}
 
+	private void test() throws SQLException {
+		Film film = db.findFilmById(1);
+		System.out.println(film);
+		List<Actor> actorList = film.getActorList();
+		System.out.println("Actor list of film: " + film.getTitle() + " is: ");
+		for (Actor item : actorList) {
+			System.out.println(item);
+		}
+	}
+
+	// for LABS
+//		System.out.println("Enter actor id: ");
+//		int actorId = input.nextInt();
+//		Actor actor = db.findActorById(actorId);
+//		if (actor == null) {
+//			System.out.println("There is no actor found with given id.");
+//		} else {
+//			System.out.println("The actor found is " + actor);
+//		}
+//
+//		System.out.println("Enter the film id: ");
+//		int fimlId = input.nextInt();
+//		List<Actor> actorList = db.findActorsByFilmId(fimlId);
+//		System.out.println("The actor list of given film id is: ");
+//		for (Actor item : actorList) {
+//			System.out.println(item);
+//		}
 }

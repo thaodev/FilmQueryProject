@@ -15,7 +15,7 @@ The program will prompt the user for menu selections until the user chose to qui
 #Technologies Used
 - My SQL
 - Java
-- Driver for DB Connection, POM file for setup Driver
+- Driver for DB Connection, POM file for setup Driver using dependency in Maven
 - MAMP for local server
 
 #Lessons Learned
